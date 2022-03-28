@@ -1,0 +1,32 @@
+version: '3'
+services:
+
+  mongodb:
+    image: mongo
+    ports:
+    - 27027:27017
+
+  postgresdb:
+    image: postgres:13.0
+    ports:
+    - 5555:5432
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+
+
+  tweet_collector:
+    build: tweet_collector/
+    volumes:
+    - ./tweet_collector/:/app
+    depends_on:
+    - mongodb
+
+  etl_perform:
+    build: etl_perform/
+    volumes:
+    - ./etl_perform/:/app
+    depends_on:
+    - mongodb
+    - postgresdb
+
+
